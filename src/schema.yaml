@@ -1,0 +1,138 @@
+openapi: 3.0.0
+info:
+  version: 2.0.0
+  title: API fest' 22 Blog API
+  description: API that allow users to obtain blogs as well as post blogs.
+servers:
+  # Added by API Auto Mocking Plugin
+  - url: https://c6b52ebe-4795-4685-91d1-2313c80cd046.mock.pstmn.io/
+    description: Postman Mock Server
+
+  - url: https://dev.foo.com/v1
+    description: Dev Server
+
+  - url: https://prod.foo.com/v1
+    description: Prod Server
+
+paths:
+  /blogs:
+    get:
+      description: Obtain information about the blogs from the database.
+      operationId: getBlogs
+      parameters:
+        - name: bodyLimit
+          in: query
+          description: The amount of blogs returned.
+          schema:
+            type: integer
+            minimum: 2
+            maximum: 10
+            example: 5
+
+      responses:
+        200:
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Blogs"
+    post:
+      description: Create new blog in database
+      operationId: addBlog
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/Blog"
+      responses:
+        200:
+          description: Sucessfully created a new blog.
+
+  /blog/{id}:
+    get:
+      description: Obtain information about a specific blog.
+      operationId: getBlog
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the blog
+          schema:
+            type: string
+            example: asdfhg
+      responses:
+        200:
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Blog"
+    delete:
+      description: Delete a specific blog.
+      operationId: deleteBlog
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Unique ID of blog which is to be deleted.
+          schema:
+            type: string
+            example: asdfhg
+      responses:
+        200:
+          description: Sucessfully deleted specified blog.
+    put:
+      description: Update a specific blog.
+      operationId: updateBlog
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Unique ID of blog which is to be updated.
+          schema:
+            type: string
+            example: asdfhg
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/Blog"
+      responses:
+        200:
+          description: Sucessfully updated a specific blog.
+
+components:
+  schemas:
+    Blogs:
+      description: Array of Blag infomation
+      type: array
+      items:
+        $ref: "#/components/schemas/Blog"
+    Blog:
+      description: Model containing blog infomation
+      properties:
+        id:
+          type: string
+          example: asdfhg
+
+        authorName:
+          type: string
+          example: Jhon Doe
+
+        title:
+          type: string
+          example: Life in Florida
+
+        content:
+          type: string
+          example: Living in Florida in my opinion is like no other life you could ever imagine. Everyday it is beautiful outside, there are possibly 15 days a year without the sun. The wildlife is outrageous
+
+        publishedOn:
+          type: string
+          format: date
+          example: 2017-07-21
